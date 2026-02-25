@@ -8,6 +8,7 @@ import lombok.*;
 import org.hibernate.annotations.SoftDelete;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @SoftDelete
 @Getter
@@ -47,5 +48,8 @@ public class Patient {
     @NotBlank(message = "Address is required")
     @Column( nullable = false)
     private String address;
+
+    @OneToMany(mappedBy = "patient")
+    private List<Appointment> appointments;
 
 }
