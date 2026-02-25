@@ -2,6 +2,8 @@ package com.kfh.healthcare.service;
 
 import com.kfh.healthcare.dto.appintment.ScheduleAppointmentRequestDTO;
 import com.kfh.healthcare.dto.appintment.ScheduleAppointmentResponseDTO;
+import com.kfh.healthcare.dto.appintment.UpdateAppointmentRequestDTO;
+import com.kfh.healthcare.dto.appintment.UpdateAppointmentResponseDTO;
 import com.kfh.healthcare.entity.Appointment;
 import com.kfh.healthcare.entity.Doctor;
 import com.kfh.healthcare.entity.Patient;
@@ -42,6 +44,31 @@ public class AppointmentService {
         Appointment savedAppointment = appointmentRepository.save(appointment);
 
         return new ScheduleAppointmentResponseDTO(
+                savedAppointment.getId(),
+                savedAppointment.getPatient().getId(),
+                savedAppointment.getDoctor().getId(),
+                savedAppointment.getAppointmentTime()
+        );
+    }
+
+    @Transactional
+    public UpdateAppointmentResponseDTO updateAppointment(Long id, UpdateAppointmentRequestDTO request) {
+        Appointment appointment = appointmentRepository.findById(id)
+                .orElseThrow(() -> new BusinessValidationException("Appointment not found with ID: " + id));
+
+        if (request.newTime() != null) {
+            appointment.setAppointmentTime(request.newTime());
+        }
+
+        if (request.newDoctorId() != null) {
+            Doctor newDoctor = doctorRepository.findById(request.newDoctorId())
+                    .orElseThrow(() -> new BusinessValidationException("Doctor not found"));
+            appointment.setDoctor(newDoctor);
+        }
+
+        Appointment savedAppointment = appointmentRepository.save(appointment);
+
+        return new UpdateAppointmentResponseDTO(
                 savedAppointment.getId(),
                 savedAppointment.getPatient().getId(),
                 savedAppointment.getDoctor().getId(),
