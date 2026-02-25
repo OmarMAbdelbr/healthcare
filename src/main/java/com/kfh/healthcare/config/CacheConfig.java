@@ -24,6 +24,9 @@ public class CacheConfig {
     @Value("${app.cache.patient.max-size}")
     private int patientMaxSize;
 
+    @Value("${app.jwt.expiration-ms}")
+    private Integer tokenExpirationMins;
+
     @Bean
     public CacheManager cacheManager() {
         CaffeineCacheManager cacheManager = new CaffeineCacheManager("doctors","patients");
@@ -37,6 +40,11 @@ public class CacheConfig {
         cacheManager.registerCustomCache("patients", Caffeine.newBuilder()
                 .expireAfterWrite(patientExpiry, TimeUnit.HOURS)
                 .maximumSize(patientMaxSize)
+                .build());
+
+        cacheManager.registerCustomCache("blacklistedTokens", Caffeine.newBuilder()
+                .expireAfterWrite(tokenExpirationMins, TimeUnit.MINUTES)
+                .maximumSize(10000)
                 .build());
 
         return cacheManager;

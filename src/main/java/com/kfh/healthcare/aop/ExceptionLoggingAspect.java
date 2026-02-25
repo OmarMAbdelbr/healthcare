@@ -15,7 +15,7 @@ public class ExceptionLoggingAspect {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @AfterThrowing(
-            pointcut = "execution(* com.kfh.healthcare..*(..))",
+            pointcut = "execution(* com.kfh.healthcare.service..*.*(..)) || execution(* com.kfh.healthcare.controller..*.*(..))",
             throwing = "exception"
     )
     public void logExceptions(JoinPoint joinPoint, Throwable exception) {

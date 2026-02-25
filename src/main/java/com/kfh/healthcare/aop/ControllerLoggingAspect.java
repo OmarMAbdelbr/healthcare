@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class ControllerLoggingAspect {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @Around("execution(* com.kfh.healthcare.controller.*.*(..))")
+    @Around("execution(* com.kfh.healthcare.controller.*.*(..)) && !within(com.kfh.healthcare.controller.AuthenticationController)")
     public Object logApiCall(ProceedingJoinPoint joinPoint) throws Throwable {
         long start = System.currentTimeMillis();
         String methodName = joinPoint.getSignature().getName();
