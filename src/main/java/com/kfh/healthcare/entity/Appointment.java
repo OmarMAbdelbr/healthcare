@@ -16,7 +16,7 @@ public class Appointment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "patient_id", nullable = false)
