@@ -9,6 +9,8 @@ import com.kfh.healthcare.exception.BusinessValidationException;
 import com.kfh.healthcare.repository.PatientRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -70,7 +72,31 @@ public class PatientService {
                 )).toList();
     }
 
+    @Cacheable(value = "patients", key = "#id")
+    public PatientWithAppointmentsDTO getPatientWithId(Long id) {
+        return patientRepository.findById(id)
+                .map(p -> new PatientWithAppointmentsDTO(
+                        p.getId(),
+                        p.getFullNameEn(),
+                        p.getFullNameAr(),
+                        p.getEmail(),
+                        p.getMobileNumber(),
+                        p.getDateOfBirth(),
+                        p.getNationalId(),
+                        p.getAddress(),
+                        p.getAppointments().stream()
+                                .map(a -> new PatientAppointmentDTO(
+                                        a.getId(),
+                                        a.getDoctor().getNameEn(),
+                                        a.getAppointmentTime(),
+                                        a.getDoctor().getSpecialty()
+                                )).toList()
+                ))
+                .orElseThrow(() -> new BusinessValidationException("Patient not found"));
+    }
+
     @Transactional
+    @CacheEvict(value = "patients", key = "#id")
     public void deletePatient(Long id) {
         if (!patientRepository.existsById(id)) {
             throw new BusinessValidationException("Patient not found with ID: " + id);

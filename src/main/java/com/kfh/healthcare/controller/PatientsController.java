@@ -32,6 +32,11 @@ public class PatientsController {
         return ResponseEntity.ok(patientService.getAllPatientsWithAppointments());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<PatientWithAppointmentsDTO> getPatientById(@PathVariable Long id) {
+        return ResponseEntity.ok(patientService.getPatientWithId(id));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletePatient(@PathVariable Long id) {
         patientService.deletePatient(id);
