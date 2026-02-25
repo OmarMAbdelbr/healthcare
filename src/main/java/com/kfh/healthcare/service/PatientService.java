@@ -69,4 +69,12 @@ public class PatientService {
                                 )).toList()
                 )).toList();
     }
+
+    @Transactional
+    public void deletePatient(Long id) {
+        if (!patientRepository.existsById(id)) {
+            throw new BusinessValidationException("Patient not found with ID: " + id);
+        }
+        patientRepository.deleteById(id);
+    }
 }

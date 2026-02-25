@@ -32,4 +32,10 @@ public class PatientsController {
         return ResponseEntity.ok(patientService.getAllPatientsWithAppointments());
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deletePatient(@PathVariable Long id) {
+        patientService.deletePatient(id);
+        return ResponseEntity.ok().build();
+    }
+
 }

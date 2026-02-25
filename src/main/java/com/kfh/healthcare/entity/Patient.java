@@ -10,12 +10,12 @@ import org.hibernate.annotations.SoftDelete;
 import java.time.LocalDate;
 import java.util.List;
 
-@SoftDelete
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@SoftDelete
 @Entity
 @Table(name = "PATIENTS")
 public class Patient {
